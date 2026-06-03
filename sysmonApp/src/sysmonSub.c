@@ -1,7 +1,8 @@
 #include <aSubRecord.h>
 #include <registryFunction.h>
 #include <epicsExport.h>
-#include <epicsStdio.h> // Fuer epicsPrintf (Bonus B3)
+#include <stdio.h>      // for printf() (Bonus B3)
+#include <stdlib.h>     // for getloadavg()
 #include <sys/sysctl.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -32,7 +33,7 @@ static long sysmonProcess(aSubRecord *prec) {
     size_t len = sizeof(memsize);
     /* Bonus B3: Fehlerbehandlung (Rueckgabewert von sysctlbyname pruefen) */
     if (sysctlbyname("hw.memsize", &memsize, &len, NULL, 0) != 0) {
-        epicsPrintf("Fehler: hw.memsize konnte nicht gelesen werden\n");
+        printf("Fehler: hw.memsize konnte nicht gelesen werden\n");
     }
     *(double *)prec->vale = (double)memsize / (1024.0 * 1024.0 * 1024.0);
 
@@ -41,7 +42,7 @@ static long sysmonProcess(aSubRecord *prec) {
     size_t len_boot = sizeof(boottime);
     /* Bonus B3: Auch hier Rueckgabewert checken */
     if (sysctlbyname("kern.boottime", &boottime, &len_boot, NULL, 0) != 0) {
-        epicsPrintf("Fehler: kern.boottime konnte nicht gelesen werden\n");
+        printf("Fehler: kern.boottime konnte nicht gelesen werden\n");
     }
     
     struct timeval now;
