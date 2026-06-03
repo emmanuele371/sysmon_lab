@@ -1,0 +1,61 @@
+record(aSub, "SYS:STATS") {
+    field(DESC, "System Statistics")
+    field(SCAN, "2 second")
+    field(INAM, "sysmonInit")
+    field(SNAM, "sysmonProcess")
+
+    field(FTVA, "DOUBLE")
+    field(FTVB, "DOUBLE")
+    field(FTVC, "DOUBLE")
+    field(FTVD, "LONG")
+    field(FTVE, "DOUBLE")
+    field(FTVF, "DOUBLE")
+
+    # Achtung: PP (Process Passive) ist zwingend erforderlich, um die nachfolgenden Records auszulösen!
+    field(OUTA, "SYS:LOAD1 PP")
+    field(OUTB, "SYS:LOAD5 PP")
+    field(OUTC, "SYS:LOAD15 PP")
+    field(OUTD, "SYS:NCPUS PP")
+    field(OUTE, "SYS:MEMTOTAL PP")
+    field(OUTF, "SYS:UPTIME PP")
+}
+
+record(ai, "SYS:LOAD1") {
+    field(DESC, "Load avg 1min")
+    field(PREC, "2")
+}
+
+record(ai, "SYS:LOAD5") {
+    field(DESC, "Load avg 5min")
+    field(PREC, "2")
+}
+
+record(ai, "SYS:LOAD15") {
+    field(DESC, "Load avg 15min")
+    field(PREC, "2")
+}
+
+record(longin, "SYS:NCPUS") {
+    field(DESC, "CPU count")
+}
+
+record(ai, "SYS:MEMTOTAL") {
+    field(DESC, "RAM GiB")
+    field(PREC, "2")
+    field(EGU,  "GiB")
+}
+
+record(ai, "SYS:UPTIME") {
+    field(DESC, "Uptime")
+    field(PREC, "0")
+    field(EGU,  "s")
+}
+
+# --- BONUS B2: Überlastungswarnung ---
+# Wenn die 1-Minuten-Last die Anzahl der CPU-Kerne überschreitet, wird der Wert auf 1 gesetzt, andernfalls auf 0.
+record(calc, "SYS:LOAD_WARN") {
+    field(DESC, "CPU Overload Warning")
+    field(INPA, "SYS:LOAD1 CP")
+    field(INPB, "SYS:NCPUS CP")
+    field(CALC, "A>B?1:0")
+}
